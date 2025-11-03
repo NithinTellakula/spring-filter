@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Session App</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #eef3f7;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 50px;
+        }
+
+        h2 {
+          color: #333;
+        }
+
+        .container {
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          width: 350px;
+        }
+
+        label {
+          display: block;
+          margin-top: 10px;
+          font-weight: bold;
+        }
+
+        input {
+          width: 100%;
+          padding: 8px;
+          margin-top: 5px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        button {
+          margin-top: 15px;
+          width: 100%;
+          padding: 10px;
+          border: none;
+          background-color: #4caf50;
+          color: white;
+          font-weight: bold;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background-color: #45a049;
+        }
+
+        #loginStatus {
+          color: green;
+          font-weight: bold;
+          text-align: center;
+          margin-top: 10px;
+        }
+
+        #output {
+          background: #f9f9f9;
+          padding: 10px;
+          border-radius: 5px;
+          margin-top: 20px;
+          border: 1px solid #ddd;
+          display: none;
+          white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<h2>Student Session App</h2>
+<div class="container">
+    <label>Username:</label>
+    <input type="text" id="username" readonly />
+    <label>Password:</label>
+    <input type="password" id="password" readonly />
+    <button onclick="login()">Login</button>
+    <div id="loginStatus"></div>
+
+    <hr />
+
+    <label>Student ID:</label>
+    <input type="number" id="studentId" placeholder="Enter ID" />
+    <label>Name:</label>
+    <input type="text" id="studentName" placeholder="Enter name" />
+    <label>Age:</label>
+    <input type="number" id="studentAge" placeholder="Enter age" />
+
+    <button onclick="saveStudent()">Save Student</button>
+    <button onclick="getStudent()">Get Student Details</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    let sessionId = null;
+
+    // Hardcoded credentials
+    const hardcodedUsername = "admin";
+    const hardcodedPassword = "admin123";
+
+    // Prefill credentials
+    document.getElementById("username").value = hardcodedUsername;
+    document.getElementById("password").value = hardcodedPassword;
+
+    async function login() {
+      try {
+        const res = await fetch("http://localhost:8080/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: hardcodedUsername,
+            password: hardcodedPassword
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.sessionId) {
+          sessionId = data.sessionId;
+          document.getElementById("loginStatus").innerText = "✅ Login Successful";
+        } else {
+          document.getElementById("loginStatus").innerText = "❌ Invalid credentials";
+        }
+      } catch (e) {
+        document.getElementById("loginStatus").innerText = "⚠️ Server error during login";
+      }
+    }
+
+    async function saveStudent() {
+      if (!sessionId) {
+        alert("Please login first!");
+        return;
+      }
+
+      const id = document.getElementById("studentId").value || 1;
+      const name = document.getElementById("studentName").value || "John";
+      const age = document.getElementById("studentAge").value || 20;
+
+      const student = { id: parseInt(id), name, age: parseInt(age) };
+
+      const res = await fetch("http://localhost:8080/student/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Session-Id": sessionId
+        },
+        body: JSON.stringify(student)
+      });
+
+      if (res.ok) {
+        alert("✅ Student saved successfully!");
+      } else {
+        alert("❌ Failed to save student (unauthorized or error).");
+      }
+    }
+
+    async function getStudent() {
+      if (!sessionId) {
+        alert("Please login first!");
+        return;
+      }
+
+      const id = document.getElementById("studentId").value || 1;
+
+      const res = await fetch(`http://localhost:8080/student/get/${id}`, {
+        method: "GET",
+        headers: { "X-Session-Id": sessionId }
+      });
+
+      const data = await res.json();
+      const output = document.getElementById("output");
+      output.style.display = "block";
+
+      if (res.ok) {
+        output.textContent = `Student Info:\nID: ${data.id}\nName: ${data.name}\nAge: ${data.age}`;
+      } else {
+        output.textContent = `Error: ${data.error || "Unauthorized or not found"}`;
+      }
+    }
+</script>
+</body>
+</html>
