@@ -78,9 +78,9 @@
 <h2>Student Session App</h2>
 <div class="container">
     <label>Username:</label>
-    <input type="text" id="username" readonly />
+    <input type="text" id="username" placeholder="Enter username" />
     <label>Password:</label>
-    <input type="password" id="password" readonly />
+    <input type="password" id="password" placeholder="Enter password" />
     <button onclick="login()">Login</button>
     <div id="loginStatus"></div>
 
@@ -102,23 +102,24 @@
 <script>
     let sessionId = null;
 
-    // Hardcoded credentials
-    const hardcodedUsername = "admin";
-    const hardcodedPassword = "admin123";
+    // Default credentials (still prefilled, but editable)
+    const defaultUsername = "admin";
+    const defaultPassword = "admin123";
 
-    // Prefill credentials
-    document.getElementById("username").value = hardcodedUsername;
-    document.getElementById("password").value = hardcodedPassword;
+    // Pre-fill credentials
+    document.getElementById("username").value = defaultUsername;
+    document.getElementById("password").value = defaultPassword;
 
+    // Login function
     async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
       try {
         const res = await fetch("http://localhost:8080/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: hardcodedUsername,
-            password: hardcodedPassword
-          })
+          body: JSON.stringify({ username, password })
         });
 
         const data = await res.json();
@@ -126,14 +127,18 @@
         if (res.ok && data.sessionId) {
           sessionId = data.sessionId;
           document.getElementById("loginStatus").innerText = "✅ Login Successful";
+          document.getElementById("loginStatus").style.color = "green";
         } else {
           document.getElementById("loginStatus").innerText = "❌ Invalid credentials";
+          document.getElementById("loginStatus").style.color = "red";
         }
       } catch (e) {
         document.getElementById("loginStatus").innerText = "⚠️ Server error during login";
+        document.getElementById("loginStatus").style.color = "orange";
       }
     }
 
+    // Save student
     async function saveStudent() {
       if (!sessionId) {
         alert("Please login first!");
@@ -146,22 +151,27 @@
 
       const student = { id: parseInt(id), name, age: parseInt(age) };
 
-      const res = await fetch("http://localhost:8080/student/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Session-Id": sessionId
-        },
-        body: JSON.stringify(student)
-      });
+      try {
+        const res = await fetch("http://localhost:8080/student/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Session-Id": sessionId
+          },
+          body: JSON.stringify(student)
+        });
 
-      if (res.ok) {
-        alert("✅ Student saved successfully!");
-      } else {
-        alert("❌ Failed to save student (unauthorized or error).");
+        if (res.ok) {
+          alert("✅ Student saved successfully!");
+        } else {
+          alert("❌ Failed to save student (unauthorized or error).");
+        }
+      } catch {
+        alert("⚠️ Error communicating with server.");
       }
     }
 
+    // Get student
     async function getStudent() {
       if (!sessionId) {
         alert("Please login first!");
@@ -170,19 +180,23 @@
 
       const id = document.getElementById("studentId").value || 1;
 
-      const res = await fetch(`http://localhost:8080/student/get/${id}`, {
-        method: "GET",
-        headers: { "X-Session-Id": sessionId }
-      });
+      try {
+        const res = await fetch(`http://localhost:8080/student/get/${id}`, {
+          method: "GET",
+          headers: { "X-Session-Id": sessionId }
+        });
 
-      const data = await res.json();
-      const output = document.getElementById("output");
-      output.style.display = "block";
+        const data = await res.json();
+        const output = document.getElementById("output");
+        output.style.display = "block";
 
-      if (res.ok) {
-        output.textContent = `Student Info:\nID: ${data.id}\nName: ${data.name}\nAge: ${data.age}`;
-      } else {
-        output.textContent = `Error: ${data.error || "Unauthorized or not found"}`;
+        if (res.ok) {
+          output.textContent = `Student Info:\nID: ${data.id}\nName: ${data.name}\nAge: ${data.age}`;
+        } else {
+          output.textContent = `Error: ${data.error || "Unauthorized or not found"}`;
+        }
+      } catch {
+        alert("⚠️ Error fetching student details.");
       }
     }
 </script>
