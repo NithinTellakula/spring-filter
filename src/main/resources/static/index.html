@@ -252,6 +252,22 @@
         alert("⚠️ Error fetching student details.");
       }
     }
+
+    // Detect Google OAuth login result from URL
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const loginStatusEl = document.getElementById("loginStatus");
+
+  if (params.get("login") === "success") {
+    loginStatusEl.innerText = "✅ Google Login Successful";
+    loginStatusEl.style.color = "green";
+  } else if (params.get("login") === "failure") {
+    loginStatusEl.innerText = "❌ Google Login Failed";
+    loginStatusEl.style.color = "red";
+  }
+});
+
+
 </script>
 </body>
 </html>
