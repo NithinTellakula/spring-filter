@@ -1,35 +1,43 @@
 package com.example.demo.singleton;
 
+import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Component
 public class SessionManager {
-    private static final SessionManager INSTANCE = new SessionManager();
-    private final Set<String> sessions = ConcurrentHashMap.newKeySet();
 
+    private final Map<String, String> sessions = new ConcurrentHashMap<>();
+    // optional TTL maps if you want expiry:
+    private final Map<String, Long> sessionExpiry = new ConcurrentHashMap<>();
+    private static final long SESSION_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
-    private SessionManager() {}
-
-
-    public static SessionManager getInstance() {
-        return INSTANCE;
+    public String createSession(String userIdentifier) {
+        String sessionId = UUID.randomUUID().toString();
+        sessions.put(sessionId, userIdentifier);
+        sessionExpiry.put(sessionId, System.currentTimeMillis() + SESSION_TTL_MS);
+        return sessionId;
     }
-
-
-    public void addSession(String id) {
-        sessions.add(id);
-    }
-
 
     public boolean isValid(String id) {
         if (id == null) return false;
-        return sessions.contains(id);
+        Long expiry = sessionExpiry.get(id);
+        if (expiry == null) return sessions.containsKey(id);
+        if (expiry < System.currentTimeMillis()) {
+            removeSession(id);
+            return false;
+        }
+        return sessions.containsKey(id);
     }
 
+    public String getUser(String id) {
+        return sessions.get(id);
+    }
 
     public void removeSession(String id) {
         sessions.remove(id);
+        sessionExpiry.remove(id);
     }
 }

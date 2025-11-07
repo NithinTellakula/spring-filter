@@ -5,45 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Session App</title>
     <style>
+        /* ===== Modern Professional Style ===== */
         body {
-          font-family: 'Segoe UI', Roboto, sans-serif;
-          background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+          font-family: "Poppins", "Segoe UI", Roboto, sans-serif;
+          background: linear-gradient(135deg, #eef2f3, #8e9eab);
           display: flex;
-          flex-direction: column;
           align-items: center;
-          justify-content: flex-start;
-          min-height: 100vh;
+          justify-content: center;
+          height: 100vh;
           margin: 0;
-          padding-top: 50px;
+          color: #222;
         }
 
         h2 {
-          color: #ffffff;
-          font-size: 28px;
-          text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+          text-align: center;
+          color: #2d3436;
           margin-bottom: 20px;
         }
 
         .container {
-          background: #ffffff;
-          padding: 25px 30px;
+          background: #fff;
+          padding: 32px 28px;
           border-radius: 16px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-          width: 380px;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+          width: 340px;
+          transition: transform 0.25s ease;
         }
 
         .container:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+          transform: translateY(-2px);
         }
 
         label {
           display: block;
-          margin-top: 12px;
-          font-weight: 600;
-          color: #333;
-          font-size: 15px;
+          margin-top: 16px;
+          font-weight: 500;
+          font-size: 14px;
         }
 
         input {
@@ -51,100 +48,142 @@
           padding: 10px;
           margin-top: 6px;
           border: 1px solid #ccc;
-          border-radius: 6px;
-          font-size: 14px;
-          transition: border-color 0.2s;
+          border-radius: 8px;
+          font-size: 15px;
+          background-color: #fafafa;
+          transition: all 0.2s;
         }
 
         input:focus {
-          border-color: #6a11cb;
+          border-color: #4b7bec;
+          box-shadow: 0 0 4px rgba(75, 123, 236, 0.3);
+          background-color: #fff;
           outline: none;
         }
 
         button {
-          margin-top: 18px;
+          margin-top: 20px;
           width: 100%;
           padding: 12px;
           border: none;
-          background: linear-gradient(90deg, #2575F7, #6A11CB);
-          color: white;
-          font-weight: bold;
-          border-radius: 8px;
+          background: linear-gradient(90deg, #4b7bec, #2d98da);
+          color: #fff;
+          font-weight: 600;
+          border-radius: 10px;
           cursor: pointer;
           font-size: 15px;
-          transition: transform 0.2s, box-shadow 0.2s;
+          transition: all 0.2s ease-in-out;
         }
 
         button:hover {
           transform: scale(1.03);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 10px rgba(45, 152, 218, 0.3);
         }
 
         .google-btn {
-          background: #DB4437;
+          background: #fff;
+          color: #444;
+          border: 1px solid #ccc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          font-weight: 500;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .google-btn img {
+          width: 20px;
+          height: 20px;
         }
 
         .google-btn:hover {
-          background: #c53929;
+          background: #f7f7f7;
         }
 
         hr {
           border: none;
-          border-top: 2px solid #eee;
+          border-top: 1px solid #eee;
           margin: 20px 0;
         }
 
         #loginStatus {
-          font-weight: bold;
+          font-weight: 600;
           text-align: center;
           margin-top: 10px;
           font-size: 14px;
         }
 
         #output {
-          background: #f4f9ff;
+          background: #f8f9fa;
           padding: 12px;
           border-radius: 8px;
-          margin-top: 20px;
-          border: 1px solid #d9e4f5;
+          margin-top: 16px;
+          border: 1px solid #e0e0e0;
           display: none;
           white-space: pre-wrap;
-          font-family: monospace;
+          font-family: "Fira Code", monospace;
           color: #333;
+          font-size: 14px;
+        }
+
+        #studentSection {
+          display: none;
+          animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
     </style>
 </head>
 
 <body>
-<h2>Student Session App</h2>
-
 <div class="container">
-    <label>Username:</label>
-    <input type="text" id="username" placeholder="Enter username" />
+    <h2>Student Session App</h2>
 
-    <label>Password:</label>
-    <input type="password" id="password" placeholder="Enter password" />
+    <!-- Login Section -->
+    <div id="loginSection">
+        <label>Username:</label>
+        <input type="text" id="username" placeholder="Enter username" />
 
-    <button onclick="login()">Login</button>
-    <div id="loginStatus"></div>
+        <label>Password:</label>
+        <input type="password" id="password" placeholder="Enter password" />
 
-    <button class="google-btn" onclick="googleLogin()">Login with Google</button>
+        <button onclick="login()">Login</button>
+        <div id="loginStatus"></div>
 
-    <hr />
+        <button class="google-btn" onclick="googleLogin()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
+            <span>Login with Google</span>
+        </button>
+    </div>
 
-    <label>Student ID:</label>
-    <input type="number" id="studentId" placeholder="Enter ID" />
+    <!-- Student Section -->
+    <div id="studentSection">
+        <hr />
 
-    <label>Name:</label>
-    <input type="text" id="studentName" placeholder="Enter name" />
+        <label>Student ID:</label>
+        <input type="number" id="studentId" placeholder="Enter ID" />
 
-    <label>Age:</label>
-    <input type="number" id="studentAge" placeholder="Enter age" />
+        <label>Name:</label>
+        <input type="text" id="studentName" placeholder="Enter name" />
 
-    <button onclick="saveStudent()">Save Student</button>
-    <button onclick="getStudent()">Get Student Details</button>
+        <label>Age:</label>
+        <input type="number" id="studentAge" placeholder="Enter age" />
 
-    <div id="output"></div>
+        <button onclick="saveStudent()">Save Student</button>
+        <button onclick="getStudent()">Get Student Details</button>
+
+        <div id="output"></div>
+    </div>
 </div>
 
 <script>
@@ -152,15 +191,97 @@
     const defaultUsername = "admin";
     const defaultPassword = "admin123";
 
-    // Autofill default credentials
+    // Prefill credentials
     document.getElementById("username").value = defaultUsername;
     document.getElementById("password").value = defaultPassword;
 
-    // Hardcoded login
+    // --- Restore session (manual or Google) ---
+    window.addEventListener("load", async () => {
+      console.log("[app] window.load - checking URL params and localStorage for session");
+      const params = new URLSearchParams(window.location.search);
+      const status = document.getElementById("loginStatus");
+
+      // ✅ Handle Google OAuth success
+      if (params.get("login") === "success") {
+        const token = params.get("token");
+        const email = params.get("email");
+        const sid = params.get("sessionId");
+        console.log("[app] OAuth callback params:", { token, email, sid });
+        sessionId = sid;
+
+        if (sessionId) {
+          // Do not assume sessionId is valid — validate with backend
+          try {
+            const res = await fetch("/session/validate", {
+              headers: { "X-Session-Id": sessionId }
+            });
+            const body = await res.json();
+            console.log("[app] /session/validate response for OAuth callback:", body);
+            if (body.valid) {
+              localStorage.setItem("sessionId", sessionId);
+              localStorage.setItem("email", email || "googleUser");
+              status.innerText = `\u2705 Google Login Successful as ${email || "User"}`;
+              status.style.color = "green";
+
+              document.getElementById("loginSection").style.display = "none";
+              document.getElementById("studentSection").style.display = "block";
+
+              const output = document.getElementById("output");
+              output.style.display = "block";
+              output.innerHTML = `<b>Google Login Info:</b><br>Email: ${email}<br>Access Token: ${token}`;
+            } else {
+              console.warn('[app] Received invalid session from OAuth callback');
+              // clear any invalid session and show login
+              localStorage.removeItem('sessionId');
+              localStorage.removeItem('email');
+              sessionId = null;
+              status.innerText = 'OAuth login returned invalid session — please try again.';
+              status.style.color = 'orange';
+            }
+          } catch (err) {
+            console.error('[app] Error validating OAuth session', err);
+            status.innerText = 'Error validating session with server.';
+            status.style.color = 'orange';
+          }
+        }
+      }
+      // ✅ If manual login already stored, validate with server before auto-logging in
+      else if (localStorage.getItem("sessionId")) {
+        const stored = localStorage.getItem("sessionId");
+        console.log("[app] Found stored sessionId, validating with server", stored);
+        try {
+          const res = await fetch('/session/validate', { headers: { 'X-Session-Id': stored } });
+          const body = await res.json();
+          console.log('[app] session/validate response:', body);
+          if (body.valid) {
+            sessionId = stored;
+            const email = localStorage.getItem('email');
+            status.innerText = `\u2705 Welcome back, ${email || "admin"}`;
+            status.style.color = "green";
+
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("studentSection").style.display = "block";
+          } else {
+            console.log('[app] Stored session invalid, clearing and staying on login screen');
+            localStorage.removeItem('sessionId');
+            localStorage.removeItem('email');
+            sessionId = null;
+          }
+        } catch (err) {
+          console.error('[app] Error validating stored session', err);
+          // If server unreachable, keep user on login for safety
+          sessionId = null;
+        }
+      }
+    });
+
+    // --- Manual Login ---
     async function login() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("loginStatus");
 
+      console.log('[app] manual login attempt', username);
       try {
         const res = await fetch("http://localhost:8080/login", {
           method: "POST",
@@ -169,29 +290,36 @@
         });
 
         const data = await res.json();
-        const status = document.getElementById("loginStatus");
+        console.log('[app] /login response', data);
 
         if (res.ok && data.sessionId) {
           sessionId = data.sessionId;
-          status.innerText = "✅ Login Successful";
+          localStorage.setItem("sessionId", sessionId);
+          localStorage.setItem("email", username);
+
+          status.innerText = "\u2705 Login Successful";
           status.style.color = "green";
+
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("studentSection").style.display = "block";
         } else {
-          status.innerText = "❌ Invalid credentials";
+          status.innerText = "\u274c Invalid credentials";
           status.style.color = "red";
         }
-      } catch {
-        const status = document.getElementById("loginStatus");
-        status.innerText = "⚠️ Server error during login";
+      } catch (err) {
+        console.error('[app] Error during manual login', err);
+        status.innerText = "\u26a0\ufe0f Server error during login";
         status.style.color = "orange";
       }
     }
 
-    // Google OAuth login
+    // --- Google OAuth ---
     function googleLogin() {
+      console.log('[app] Redirecting to OAuth2 authorization endpoint');
       window.location.href = "http://localhost:8080/oauth2/authorization/google";
     }
 
-    // Save student
+    // --- Save Student ---
     async function saveStudent() {
       if (!sessionId) {
         alert("Please login first!");
@@ -201,9 +329,9 @@
       const id = document.getElementById("studentId").value || 1;
       const name = document.getElementById("studentName").value || "John";
       const age = document.getElementById("studentAge").value || 20;
-
       const student = { id: parseInt(id), name, age: parseInt(age) };
 
+      console.log('[app] saveStudent sending', student, 'with sessionId', sessionId);
       try {
         const res = await fetch("http://localhost:8080/student/save", {
           method: "POST",
@@ -215,16 +343,17 @@
         });
 
         if (res.ok) {
-          alert("✅ Student saved successfully!");
+          alert("\u2705 Student saved successfully!");
         } else {
-          alert("❌ Failed to save student (unauthorized or error).");
+          alert("\u274c Failed to save student (unauthorized or error).");
         }
-      } catch {
-        alert("⚠️ Error communicating with server.");
+      } catch (err) {
+        console.error('[app] Error saving student', err);
+        alert("\u26a0\ufe0f Error communicating with server.");
       }
     }
 
-    // Get student
+    // --- Get Student ---
     async function getStudent() {
       if (!sessionId) {
         alert("Please login first!");
@@ -233,6 +362,7 @@
 
       const id = document.getElementById("studentId").value || 1;
 
+      console.log('[app] getStudent id=', id, 'sessionId=', sessionId);
       try {
         const res = await fetch(`http://localhost:8080/student/get/${id}`, {
           method: "GET",
@@ -248,26 +378,18 @@
         } else {
           output.textContent = `Error: ${data.error || "Unauthorized or not found"}`;
         }
-      } catch {
-        alert("⚠️ Error fetching student details.");
+      } catch (err) {
+        console.error('[app] Error fetching student', err);
       }
     }
 
-    // Detect Google OAuth login result from URL
-window.addEventListener("load", () => {
-  const params = new URLSearchParams(window.location.search);
-  const loginStatusEl = document.getElementById("loginStatus");
-
-  if (params.get("login") === "success") {
-    loginStatusEl.innerText = "✅ Google Login Successful";
-    loginStatusEl.style.color = "green";
-  } else if (params.get("login") === "failure") {
-    loginStatusEl.innerText = "❌ Google Login Failed";
-    loginStatusEl.style.color = "red";
-  }
-});
-
-
+    // --- Logout ---
+    function logout() {
+      localStorage.removeItem("sessionId");
+      localStorage.removeItem("email");
+      sessionId = null;
+      window.location.href = "/index.html";
+    }
 </script>
 </body>
 </html>

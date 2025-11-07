@@ -8,24 +8,25 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler) {
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Allow static frontend files and custom endpoints
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**",
-                                "/login", "/student/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/login", "/oauth2/**", "/student/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("http://localhost:8080/index.html?login=success", true)
-                        .failureUrl("http://localhost:8080/index.html?login=failure")
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/index.html")
-                        .permitAll()
+                        .successHandler(oAuth2SuccessHandler)
+                        .failureUrl("/index.html?login=failure")
                 );
+
         return http.build();
     }
 }
